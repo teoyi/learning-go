@@ -58,7 +58,7 @@ func main() { // this is where it tells the compiler the code starts here only 1
 	remainingTickets = remainingTickets - userTickets
 	bookings[0] = firstName + " " + lastName
 
-	fmt.Printf("The whole array: %v\n", bookings)
+	fmt.Printf("The whole array: %v\n", bookings)asdsads
 	fmt.Printf("The first value: %v\n", bookings[0])
 	fmt.Printf("Array Type: %T\n", bookings)
 	fmt.Printf("Array length: %v\n", len(bookings))
