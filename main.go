@@ -2,8 +2,9 @@ package main // all code needs to belong to a package.
 // first statement of a go file must be package and the name of the package -> smth like declare namespace?
 
 import (
+	"booking-app/helper"
 	"fmt" // just like python libraries needs to be imported fmt - format
-	"strings"
+	"strconv"
 )
 
 // here is package level so can be assesed anywhere
@@ -11,6 +12,9 @@ var conferenceName = "Go Conference" // to create variables use var prefix to te
 // a different way to create a var we can use := to replace var, but in this case we cant fix its type
 const conferenceTickets = 50 // for constants in the code, we add prefix const
 var remainingTickets uint = 50
+
+// instead of a list of string we want a map
+var bookings = make([]map[string]string, 0) // to create an empty slice of maps, we need to indicate the starting size. It is dynamic so putting 0 works
 
 func main() { // this is where it tells the compiler the code starts here only 1 main func in go file
 
@@ -34,7 +38,9 @@ func main() { // this is where it tells the compiler the code starts here only 1
 	// var bookings [50]string
 	// to create a slice, its a dynamic array like list in python
 	// can be done with
-	var bookings []string // whreby you dont define  a size
+
+	// a data type that lets us store key values is Maps
+
 	//adding new elements
 
 	// for loop time
@@ -42,7 +48,7 @@ func main() { // this is where it tells the compiler the code starts here only 1
 		// for remainingTickets > 0 { // we can add a condition to make it work in indefinite loop
 
 		firstName, lastName, email, userTickets := getUserInput()
-		isValidName, isValidEmail, isValidTickets := validateUserInput(firstName, lastName, email, userTickets, remainingTickets)
+		isValidName, isValidEmail, isValidTickets := helper.ValidateUserInput(firstName, lastName, email, userTickets, remainingTickets)
 
 		if isValidName && isValidEmail && isValidTickets {
 			bookTickets(remainingTickets, userTickets, bookings, firstName, lastName, email, conferenceName)
@@ -76,22 +82,14 @@ func greetUsers() { // need to tell function what type the variable is gonna be
 }
 
 // to execute, use { go run <file name>}
-func printFirstNames(bookings []string) []string { // need to define type of returned values
+func printFirstNames(bookings []map[string]string) []string { // need to define type of returned values
 	firstNames := []string{}
 	for _, booking := range bookings { // range is needed to iterate over elements, _ is used to replace unused variables, index is in its place range gives index and value
-		var names = strings.Fields(booking) // split strings with white space
-		var firstName = names[0]
-		firstNames = append(firstNames, firstName)
+		// var names = strings.Fields(booking) // split strings with white space
+		// var firstName = names[0]
+		firstNames = append(firstNames, booking["firstName"])
 	}
 	return firstNames
-}
-
-func validateUserInput(firstName string, lastName string, email string, userTickets uint, remainingTickets uint) (bool, bool, bool) {
-	isValidName := len(firstName) >= 2 && len(lastName) >= 2
-	isValidEmail := strings.Contains(email, "@")
-	isValidTickets := userTickets > 0 && userTickets < remainingTickets
-
-	return isValidName, isValidEmail, isValidTickets
 }
 
 func getUserInput() (string, string, string, uint) {
@@ -121,10 +119,21 @@ func getUserInput() (string, string, string, uint) {
 	return firstName, lastName, email, userTickets
 }
 
-func bookTickets(remainingTickets uint, userTickets uint, bookings []string, firstName string, lastName string, email string, conferenceName string) {
+func bookTickets(remainingTickets uint, userTickets uint, bookings []map[string]string, firstName string, lastName string, email string, conferenceName string) {
 	remainingTickets = remainingTickets - userTickets
 	// bookings[0] = firstName + " " + lastName // for arary
-	bookings = append(bookings, firstName+" "+lastName)
+
+	// create a map for a user
+	var userData = make(map[string]string) //  craete empty map and their types. Inside brackets is key outside is value. Make is built in to tell it to create a map cannot mix data types in map
+
+	// to add value into map
+	userData["firstName"] = firstName
+	userData["lastName"] = lastName
+	userData["email"] = email
+	userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10) // formatUint takes in a value and formats it into a decimal number, second argument is base 10
+
+	// bookings = append(bookings, firstName+" "+lastName)
+	bookings = append(bookings, userData)
 
 	// fmt.Printf("The whole array: %v\n", bookings)
 	// fmt.Printf("The first value: %v\n", bookings[0])
