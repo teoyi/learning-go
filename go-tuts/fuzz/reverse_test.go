@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+// this is a unit test 
 func TestReverse(t *testing.T) {
 	testcases := []struct { 
 		in, want string
@@ -20,3 +21,6 @@ func TestReverse(t *testing.T) {
 		}
 	}
 }
+
+// limits of unit test is that each input must be added to test by the dev 
+// Fuzzing comes up with inputs for the code and may identify edge cases that the test cases the dev comes up with didnt reach . 
